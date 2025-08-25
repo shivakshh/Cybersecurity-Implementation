@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}EduNetwork{% endblock %}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+
+        .header {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+            margin-bottom: 30px;
+            border-radius: 15px;
+        }
+
+        .header h1 {
+            color: white;
+            text-align: center;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin: 5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-google {
+            background: #db4437;
+        }
+
+        .btn-github {
+            background: #333;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            font-weight: 500;
+        }
+
+        .alert-error {
+            background: #fee;
+            border: 1px solid #fcc;
+            color: #c33;
+        }
+
+        .alert-success {
+            background: #efe;
+            border: 1px solid #cfc;
+            color: #3c3;
+        }
+
+        .alert-info {
+            background: #eef;
+            border: 1px solid #ccf;
+            color: #33c;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .course-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .course-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 25px;
+            transition: transform 0.3s;
+        }
+
+        .course-card:hover {
+            transform: scale(1.05);
+        }
+
+        .course-card h3 {
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+
+        .course-card p {
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .history-table th,
+        .history-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .history-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+        }
+
+        .mfa-setup {
+            text-align: center;
+        }
+
+        .qr-code {
+            margin: 20px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            display: inline-block;
+        }
+
+        .security-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .mfa-enabled {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .mfa-required {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .course-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎓 EduNetwork</h1>
+            <p style="text-align: center; color: white; opacity: 0.9; margin-top: 10px;">
+                Secure, Passwordless Learning Platform
+            </p>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        {% block content %}
+        <!-- Login Page Content -->
+        <div class="card" style="text-align: center; max-width: 500px; margin: 50px auto;">
+            <h2 style="margin-bottom: 30px; color: #333;">Welcome to EduNetwork</h2>
+            <p style="margin-bottom: 30px; color: #666; font-size: 18px;">
+                🔒 Secure, passwordless authentication<br>
+                🌍 Global access with intelligent security<br>
+                📚 Premium courses at your fingertips
+            </p>
+            
+            <div style="margin: 30px 0;">
+                <h3 style="margin-bottom: 20px; color: #555;">Sign in with your account</h3>
+                <a href="/auth/google" class="btn btn-google">
+                    🔍 Continue with Google
+                </a>
+                <br>
+                <a href="/auth/github" class="btn btn-github">
+                    🐱 Continue with GitHub
+                </a>
+            </div>
+            
+            <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee;">
+                <p style="color: #888; font-size: 14px;">
+                    🔐 No passwords required • 🛡️ Multi-factor authentication • 🌐 Geo-secure access
+                </p>
+            </div>
+        </div>
+
+        <!-- Dashboard Content (when logged in) -->
+        {% if current_user.is_authenticated %}
+        <div class="navbar">
+            <div>
+                <span style="color: white; font-size: 18px;">
+                    Welcome, {{ current_user.name }}!
+                    {% if current_user.mfa_enabled %}
+                    <span class="security-badge mfa-enabled">🔒 MFA Enabled</span>
+                    {% endif %}
+                </span>
+            </div>
+            <div>
+                {% if not current_user.mfa_enabled %}
+                <a href="/mfa/setup" class="btn">🔐 Setup MFA</a>
+                {% endif %}
+                <a href="/logout" class="btn">Logout</a>
+            </div>
+        </div>
+
+        <!-- Courses Section -->
+        <div class="card">
+            <h2>📚 Available Courses</h2>
+            <div class="course-grid">
+                {% for course in courses %}
+                <div class="course-card">
+                    <h3>{{ course[1] }}</h3>
+                    <p>{{ course[2] }}</p>
+                    <a href="/course/{{ course[0] }}" class="btn" style="background: rgba(255,255,255,0.2);">
+                        Start Learning →
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Security Dashboard -->
+        <div class="card">
+            <h2>🛡️ Security Dashboard</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                <div style="background: #e8f5e8; padding: 20px; border-radius: 10px;">
+                    <h4>Authentication Method</h4>
+                    <p>{{ current_user.oauth_provider|title }} OAuth</p>
+                </div>
+                <div style="background: #fff3e0; padding: 20px; border-radius: 10px;">
+                    <h4>MFA Status</h4>
+                    <p>{{ "Enabled" if current_user.mfa_enabled else "Not Configured" }}</p>
+                </div>
+                <div style="background: #e3f2fd; padding: 20px; border-radius: 10px;">
+                    <h4>Login History</h4>
+                    <p>{{ login_history|length }} recent sessions</p>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 30px;">Recent Login Activity</h3>
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>IP Address</th>
+                        <th>Location</th>
+                        <th>Date/Time</th>
+                        <th>Security</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for login in login_history %}
+                    <tr>
+                        <td>{{ login[0] }}</td>
+                        <td>{{ login[1] }}</td>
+                        <td>{{ login[2] }}</td>
+                        <td>
+                            {% if login[3] %}
+                            <span class="security-badge mfa-required">MFA Required</span>
+                            {% else %}
+                            <span class="security-badge" style="background: #d1ecf1; color: #0c5460;">Standard</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+
+        <!-- MFA Setup Page -->
+        {% if request.endpoint == 'mfa_setup' %}
+        <div class="card mfa-setup">
+            <h2>🔐 Setup Multi-Factor Authentication</h2>
+            <p style="margin-bottom: 30px; color: #666;">
+                Secure your account with time-based authentication codes
+            </p>
+            
+            <div class="qr-code">
+                <img src="data:image/png;base64,{{ qr_code }}" alt="QR Code for MFA Setup">
+            </div>
+            
+            <p style="margin-bottom: 20px;">
+                1. Install an authenticator app (Google Authenticator, Authy, etc.)<br>
+                2. Scan the QR code above<br>
+                3. Enter the 6-digit code to verify setup
+            </p>
+            
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                <strong>Manual Entry Key:</strong><br>
+                <code style="background: white; padding: 10px; border-radius: 5px; font-family: monospace;">
+                    {{ secret }}
+                </code>
+            </div>
+            
+            <form method="POST" action="/mfa/verify" style="max-width: 300px; margin: 0 auto;">
+                <div class="form-group">
+                    <label>Enter verification code:</label>
+                    <input type="text" name="token" placeholder="123456" maxlength="6" required 
+                           style="text-align: center; font-size: 24px; letter-spacing: 5px;">
+                </div>
+                <button type="submit" class="btn">✅ Verify & Enable MFA</button>
+            </form>
+        </div>
+        {% endif %}
+
+        <!-- MFA Verification Page -->
+        {% if request.endpoint == 'mfa_verify' %}
+        <div class="card" style="text-align: center; max-width: 400px; margin: 50px auto;">
+            <h2>🔐 Multi-Factor Authentication</h2>
+            <p style="margin-bottom: 30px; color: #666;">
+                Enter the 6-digit code from your authenticator app
+            </p>
+            
+            <form method="POST" action="/mfa/verify">
+                <div class="form-group">
+                    <input type="text" name="token" placeholder="123456" maxlength="6" required 
+                           style="text-align: center; font-size: 32px; letter-spacing: 8px; width: 250px;">
+                </div>
+                <button type="submit" class="btn">🔓 Verify Code</button>
+            </form>
+            
+            <p style="margin-top: 20px; font-size: 14px; color: #888;">
+                Code expires every 30 seconds
+            </p>
+        </div>
+        {% endif %}
+
+        <!-- Course View Page -->
+        {% if course %}
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                <h1>{{ course[1] }}</h1>
+                <a href="/dashboard" class="btn">← Back to Dashboard</a>
+            </div>
+            
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 30px;">
+                <h3>Course Description</h3>
+                <p>{{ course[2] }}</p>
+            </div>
+            
+            <div style="background: white; border: 2px solid #eee; border-radius: 15px; padding: 30px;">
+                <h3>Course Content</h3>
+                <div style="line-height: 1.8; margin-top: 20px;">
+                    {{ course[3]|safe }}
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 40px;">
+                <button class="btn" onclick="markComplete()">✅ Mark as Complete</button>
+                <button class="btn" onclick="saveProgress()" style="background: #28a745;">💾 Save Progress</button>
+            </div>
+        </div>
+        {% endif %}
+        {% endblock %}
+    </div>
+
+    <script>
+        // MFA Timer for verification page
+        if (window.location.pathname === '/mfa/verify') {
+            let timeLeft = 30;
+            const timer = setInterval(() => {
+                timeLeft--;
+                if (timeLeft <= 0) {
+                    timeLeft = 30;
+                }
+                document.title = `(${timeLeft}s) MFA Verification - EduNetwork`;
+            }, 1000);
+        }
+
+        // Auto-focus on MFA input
+        const mfaInput = document.querySelector('input[name="token"]');
+        if (mfaInput) {
+            mfaInput.focus();
+            mfaInput.addEventListener('input', (e) => {
+                e.target.value = e.target.value.replace(/\D/g, '');
+                if (e.target.value.length === 6) {
+                    e.target.form.submit();
+                }
+            });
+        }
+
+        // Course interaction functions
+        function markComplete() {
+            alert('Course marked as complete! 🎉');
+            // In a real app, this would send an API request
+        }
+
+        function saveProgress() {
+            alert('Progress saved! 💾');
+            // In a real app, this would save current position/progress
+        }
+
+        // Auto-refresh dashboard every 5 minutes to update login history
+        if (window.location.pathname === '/dashboard') {
+            setTimeout(() => {
+                window.location.reload();
+            }, 300000); // 5 minutes
+        }
+    </script>
+</body>
+</html>

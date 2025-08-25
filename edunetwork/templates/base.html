@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}EduNetwork{% endblock %}</title>
+    <title>{% block title %}SecureVault{% endblock %}</title>
     <style>
         * {
             margin: 0;
@@ -13,7 +13,7 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
             min-height: 100vh;
             color: #333;
         }
@@ -30,6 +30,7 @@
             padding: 30px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             margin: 20px 0;
+            backdrop-filter: blur(10px);
         }
 
         .header {
@@ -48,7 +49,7 @@
         }
 
         .btn {
-            background: linear-gradient(45deg, #667eea, #764ba2);
+            background: linear-gradient(45deg, #3498db, #2c3e50);
             color: white;
             border: none;
             padding: 12px 30px;
@@ -95,7 +96,7 @@
 
         .form-group input:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #3498db;
         }
 
         .alert {
@@ -123,60 +124,6 @@
             color: #33c;
         }
 
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .course-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-top: 30px;
-        }
-
-        .course-card {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            color: white;
-            border-radius: 15px;
-            padding: 25px;
-            transition: transform 0.3s;
-        }
-
-        .course-card:hover {
-            transform: scale(1.05);
-        }
-
-        .course-card h3 {
-            margin-bottom: 15px;
-            font-size: 1.4em;
-        }
-
-        .course-card p {
-            margin-bottom: 20px;
-            opacity: 0.9;
-        }
-
-        .history-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        .history-table th,
-        .history-table td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .history-table th {
-            background: #f8f9fa;
-            font-weight: 600;
-        }
-
         .mfa-setup {
             text-align: center;
         }
@@ -189,22 +136,208 @@
             display: inline-block;
         }
 
-        .security-badge {
-            display: inline-block;
-            padding: 5px 10px;
-            border-radius: 15px;
+        .qr-code img {
+            max-width: 200px;
+            height: auto;
+        }
+
+        /* Notepad Styles */
+        .notepad-container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            grid-template-rows: auto 1fr;
+            gap: 0;
+            height: 600px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .notepad-header {
+            grid-column: 1 / -1;
+            background: #f8f9fa;
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .note-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .btn-small {
+            padding: 8px 15px;
+            font-size: 14px;
+            margin: 0;
+        }
+
+        .note-controls select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: white;
+        }
+
+        .note-info {
             font-size: 12px;
+            color: #666;
+        }
+
+        .notepad-sidebar {
+            background: #f1f3f4;
+            padding: 15px;
+            border-right: 1px solid #ddd;
+            overflow-y: auto;
+        }
+
+        .notepad-sidebar h4 {
+            margin-bottom: 15px;
+            color: #555;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .note-list {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .note-item {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .note-item:hover {
+            border-color: #3498db;
+            transform: translateX(5px);
+        }
+
+        .note-item.active {
+            border-color: #3498db;
+            background: #e3f2fd;
+        }
+
+        .note-title {
             font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 5px;
+            color: #333;
         }
 
-        .mfa-enabled {
-            background: #d4edda;
-            color: #155724;
+        .note-preview {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
         }
 
-        .mfa-required {
-            background: #fff3cd;
-            color: #856404;
+        .note-date {
+            font-size: 11px;
+            color: #999;
+        }
+
+        .notepad-editor {
+            display: flex;
+            flex-direction: column;
+            background: white;
+        }
+
+        .note-title-input {
+            border: none;
+            border-bottom: 2px solid #eee;
+            padding: 15px 20px;
+            font-size: 20px;
+            font-weight: 600;
+            background: #fafafa;
+        }
+
+        .note-title-input:focus {
+            outline: none;
+            border-bottom-color: #3498db;
+            background: white;
+        }
+
+        #noteContent {
+            flex: 1;
+            border: none;
+            padding: 20px;
+            font-size: 16px;
+            line-height: 1.6;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            resize: none;
+            background: white;
+        }
+
+        #noteContent:focus {
+            outline: none;
+        }
+
+        .notepad-footer {
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .tags-section input {
+            border: 1px solid #ddd;
+            padding: 8px 12px;
+            border-radius: 20px;
+            width: 250px;
+            font-size: 12px;
+        }
+
+        .encryption-status {
+            font-size: 12px;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .notepad-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto 1fr;
+                height: auto;
+                min-height: 400px;
+            }
+
+            .notepad-sidebar {
+                grid-row: 2;
+                max-height: 150px;
+            }
+
+            .notepad-header {
+                flex-direction: column;
+                gap: 10px;
+                align-items: stretch;
+            }
+
+            .note-controls {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .notepad-footer {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .tags-section input {
+                width: 100%;
+            }
         }
 
         @media (max-width: 768px) {
@@ -215,19 +348,15 @@
             .header h1 {
                 font-size: 2em;
             }
-
-            .course-grid {
-                grid-template-columns: 1fr;
-            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🎓 EduNetwork</h1>
+            <h1>🔐 SecureVault</h1>
             <p style="text-align: center; color: white; opacity: 0.9; margin-top: 10px;">
-                Secure, Passwordless Learning Platform
+                Your Personal Secure Document Manager
             </p>
         </div>
 
@@ -240,126 +369,17 @@
         {% endwith %}
 
         {% block content %}
-        <!-- Login Page Content -->
-        <div class="card" style="text-align: center; max-width: 500px; margin: 50px auto;">
-            <h2 style="margin-bottom: 30px; color: #333;">Welcome to EduNetwork</h2>
-            <p style="margin-bottom: 30px; color: #666; font-size: 18px;">
-                🔒 Secure, passwordless authentication<br>
-                🌍 Global access with intelligent security<br>
-                📚 Premium courses at your fingertips
-            </p>
-            
-            <div style="margin: 30px 0;">
-                <h3 style="margin-bottom: 20px; color: #555;">Sign in with your account</h3>
-                <a href="/auth/google" class="btn btn-google">
-                    🔍 Continue with Google
-                </a>
-                <br>
-                <a href="/auth/github" class="btn btn-github">
-                    🐱 Continue with GitHub
-                </a>
-            </div>
-            
-            <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee;">
-                <p style="color: #888; font-size: 14px;">
-                    🔐 No passwords required • 🛡️ Multi-factor authentication • 🌐 Geo-secure access
-                </p>
-            </div>
-        </div>
-
-        <!-- Dashboard Content (when logged in) -->
-        {% if current_user.is_authenticated %}
-        <div class="navbar">
-            <div>
-                <span style="color: white; font-size: 18px;">
-                    Welcome, {{ current_user.name }}!
-                    {% if current_user.mfa_enabled %}
-                    <span class="security-badge mfa-enabled">🔒 MFA Enabled</span>
-                    {% endif %}
-                </span>
-            </div>
-            <div>
-                {% if not current_user.mfa_enabled %}
-                <a href="/mfa/setup" class="btn">🔐 Setup MFA</a>
-                {% endif %}
-                <a href="/logout" class="btn">Logout</a>
-            </div>
-        </div>
-
-        <!-- Courses Section -->
-        <div class="card">
-            <h2>📚 Available Courses</h2>
-            <div class="course-grid">
-                {% for course in courses %}
-                <div class="course-card">
-                    <h3>{{ course[1] }}</h3>
-                    <p>{{ course[2] }}</p>
-                    <a href="/course/{{ course[0] }}" class="btn" style="background: rgba(255,255,255,0.2);">
-                        Start Learning →
-                    </a>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-
-        <!-- Security Dashboard -->
-        <div class="card">
-            <h2>🛡️ Security Dashboard</h2>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
-                <div style="background: #e8f5e8; padding: 20px; border-radius: 10px;">
-                    <h4>Authentication Method</h4>
-                    <p>{{ current_user.oauth_provider|title }} OAuth</p>
-                </div>
-                <div style="background: #fff3e0; padding: 20px; border-radius: 10px;">
-                    <h4>MFA Status</h4>
-                    <p>{{ "Enabled" if current_user.mfa_enabled else "Not Configured" }}</p>
-                </div>
-                <div style="background: #e3f2fd; padding: 20px; border-radius: 10px;">
-                    <h4>Login History</h4>
-                    <p>{{ login_history|length }} recent sessions</p>
-                </div>
-            </div>
-
-            <h3 style="margin-top: 30px;">Recent Login Activity</h3>
-            <table class="history-table">
-                <thead>
-                    <tr>
-                        <th>IP Address</th>
-                        <th>Location</th>
-                        <th>Date/Time</th>
-                        <th>Security</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for login in login_history %}
-                    <tr>
-                        <td>{{ login[0] }}</td>
-                        <td>{{ login[1] }}</td>
-                        <td>{{ login[2] }}</td>
-                        <td>
-                            {% if login[3] %}
-                            <span class="security-badge mfa-required">MFA Required</span>
-                            {% else %}
-                            <span class="security-badge" style="background: #d1ecf1; color: #0c5460;">Standard</span>
-                            {% endif %}
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        {% endif %}
-
+        <!-- Check if we're on MFA setup page -->
+        {% if qr_code and secret %}
         <!-- MFA Setup Page -->
-        {% if request.endpoint == 'mfa_setup' %}
         <div class="card mfa-setup">
             <h2>🔐 Setup Multi-Factor Authentication</h2>
             <p style="margin-bottom: 30px; color: #666;">
-                Secure your account with time-based authentication codes
+                Protect your documents with time-based authentication codes
             </p>
             
             <div class="qr-code">
-                <img src="data:image/png;base64,{{ qr_code }}" alt="QR Code for MFA Setup">
+                <img src="data:image/png;base64,{{ qr_code }}" alt="QR Code for MFA Setup" />
             </div>
             
             <p style="margin-bottom: 20px;">
@@ -375,7 +395,7 @@
                 </code>
             </div>
             
-            <form method="POST" action="/mfa/verify" style="max-width: 300px; margin: 0 auto;">
+            <form method="POST" style="max-width: 300px; margin: 0 auto;">
                 <div class="form-group">
                     <label>Enter verification code:</label>
                     <input type="text" name="token" placeholder="123456" maxlength="6" required 
@@ -384,53 +404,176 @@
                 <button type="submit" class="btn">✅ Verify & Enable MFA</button>
             </form>
         </div>
-        {% endif %}
 
+        {% elif request.endpoint == 'mfa_verify' %}
         <!-- MFA Verification Page -->
-        {% if request.endpoint == 'mfa_verify' %}
         <div class="card" style="text-align: center; max-width: 400px; margin: 50px auto;">
             <h2>🔐 Multi-Factor Authentication</h2>
             <p style="margin-bottom: 30px; color: #666;">
                 Enter the 6-digit code from your authenticator app
             </p>
             
-            <form method="POST" action="/mfa/verify">
+            <form method="POST">
                 <div class="form-group">
                     <input type="text" name="token" placeholder="123456" maxlength="6" required 
                            style="text-align: center; font-size: 32px; letter-spacing: 8px; width: 250px;">
                 </div>
-                <button type="submit" class="btn">🔓 Verify Code</button>
+                <button type="submit" class="btn">🔓 Verify & Access Vault</button>
             </form>
             
             <p style="margin-top: 20px; font-size: 14px; color: #888;">
                 Code expires every 30 seconds
             </p>
         </div>
-        {% endif %}
 
-        <!-- Course View Page -->
-        {% if course %}
+        {% elif current_user.is_authenticated %}
+        <!-- Dashboard Content -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <div>
+                <span style="color: white; font-size: 18px;">
+                    Welcome, {{ current_user.name }}!
+                    {% if current_user.mfa_enabled %}
+                    <span style="background: #d4edda; color: #155724; padding: 5px 10px; border-radius: 15px; font-size: 12px; font-weight: 600;">🔒 MFA Active</span>
+                    {% endif %}
+                </span>
+            </div>
+            <div>
+                {% if not current_user.mfa_enabled %}
+                <a href="/mfa/setup" class="btn">🔐 Setup MFA</a>
+                {% endif %}
+                <a href="/logout" class="btn">Logout</a>
+            </div>
+        </div>
+
         <div class="card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
-                <h1>{{ course[1] }}</h1>
-                <a href="/dashboard" class="btn">← Back to Dashboard</a>
-            </div>
-            
-            <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 30px;">
-                <h3>Course Description</h3>
-                <p>{{ course[2] }}</p>
-            </div>
-            
-            <div style="background: white; border: 2px solid #eee; border-radius: 15px; padding: 30px;">
-                <h3>Course Content</h3>
-                <div style="line-height: 1.8; margin-top: 20px;">
-                    {{ course[3]|safe }}
+            <h2>📝 Secure Notepad</h2>
+            <div class="notepad-container">
+                <div class="notepad-header">
+                    <div class="note-controls">
+                        <button class="btn btn-small" onclick="newNote()">📄 New Note</button>
+                        <button class="btn btn-small" onclick="saveNote()">💾 Save</button>
+                        <button class="btn btn-small" onclick="exportNote()">📤 Export</button>
+                        <select id="fontSize" onchange="changeFontSize()">
+                            <option value="14px">Small</option>
+                            <option value="16px" selected>Medium</option>
+                            <option value="18px">Large</option>
+                        </select>
+                    </div>
+                    <div class="note-info">
+                        <span id="charCount">0 characters</span> | 
+                        <span id="lastSaved">Never saved</span>
+                    </div>
+                </div>
+                
+                <div class="notepad-sidebar">
+                    <h4>📋 My Notes</h4>
+                    <div class="note-list" id="noteList">
+                        <div class="note-item active" onclick="loadNote('welcome')">
+                            <div class="note-title">Welcome Note</div>
+                            <div class="note-preview">Getting started with SecureVault...</div>
+                            <div class="note-date">Today</div>
+                        </div>
+                        <div class="note-item" onclick="loadNote('ideas')">
+                            <div class="note-title">Project Ideas</div>
+                            <div class="note-preview">List of innovative concepts...</div>
+                            <div class="note-date">Yesterday</div>
+                        </div>
+                        <div class="note-item" onclick="loadNote('meeting')">
+                            <div class="note-title">Meeting Notes</div>
+                            <div class="note-preview">Key discussion points...</div>
+                            <div class="note-date">Aug 23</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="notepad-editor">
+                    <input type="text" id="noteTitle" placeholder="Note Title..." value="Welcome Note" class="note-title-input">
+                    <textarea id="noteContent" placeholder="Start typing your secure notes here...">Welcome to SecureVault Notepad! 🔐
+
+This is your personal encrypted notepad where you can:
+
+✨ Features:
+• Write and save encrypted notes
+• Auto-save functionality
+• Rich text formatting
+• Export to various formats
+• Search through your notes
+• Organize with tags
+
+🛡️ Security:
+• All notes are encrypted with AES-256
+• Zero-knowledge architecture
+• End-to-end encryption
+• Secure local storage
+
+📝 Getting Started:
+1. Start typing in this area
+2. Your notes are auto-saved every 10 seconds
+3. Use the sidebar to organize multiple notes
+4. Export important notes for backup
+
+Your privacy and security are our top priorities. All notes are encrypted before being stored, and only you have access to the encryption keys.
+
+Happy note-taking! 📚</textarea>
+                    
+                    <div class="notepad-footer">
+                        <div class="tags-section">
+                            <input type="text" id="noteTags" placeholder="Add tags (comma-separated)..." value="welcome, getting-started">
+                        </div>
+                        <div class="encryption-status">
+                            🔒 <span style="color: #27ae60;">Encrypted & Secure</span>
+                        </div>
+                    </div>
                 </div>
             </div>
+        </div>
+
+            {% if login_history %}
+            <h3>Recent Login History:</h3>
+            <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                <tr>
+                    <th style="border: 1px solid #ddd; padding: 8px;">IP Address</th>
+                    <th style="border: 1px solid #ddd; padding: 8px;">Location</th>
+                    <th style="border: 1px solid #ddd; padding: 8px;">Login Time</th>
+                    <th style="border: 1px solid #ddd; padding: 8px;">MFA</th>
+                </tr>
+                {% for login in login_history %}
+                <tr>
+                    <td style="border: 1px solid #ddd; padding: 8px;">{{ login[0] }}</td>
+                    <td style="border: 1px solid #ddd; padding: 8px;">{{ login[1] }}</td>
+                    <td style="border: 1px solid #ddd; padding: 8px;">{{ login[2] }}</td>
+                    <td style="border: 1px solid #ddd; padding: 8px;">{{ "Yes" if login[3] else "No" }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+            {% endif %}
+        </div>
+
+        {% else %}
+        <!-- Login Page Content -->
+        <div class="card" style="text-align: center; max-width: 500px; margin: 50px auto;">
+            <h2 style="margin-bottom: 30px; color: #333;">Welcome to SecureVault</h2>
+            <p style="margin-bottom: 30px; color: #666; font-size: 18px;">
+                🔒 Bank-grade security for your documents<br>
+                🌍 Access from anywhere with intelligent protection<br>
+                📁 Organize, encrypt, and manage your files
+            </p>
             
-            <div style="text-align: center; margin-top: 40px;">
-                <button class="btn" onclick="markComplete()">✅ Mark as Complete</button>
-                <button class="btn" onclick="saveProgress()" style="background: #28a745;">💾 Save Progress</button>
+            <div style="margin: 30px 0;">
+                <h3 style="margin-bottom: 20px; color: #555;">Secure Access</h3>
+                <a href="/auth/google" class="btn btn-google">
+                    🔍 Continue with Google
+                </a>
+                <br>
+                <a href="/auth/github" class="btn btn-github">
+                    🐱 Continue with GitHub
+                </a>
+            </div>
+            
+            <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee;">
+                <p style="color: #888; font-size: 14px;">
+                    🔐 No passwords • 🛡️ Multi-factor auth • 🌐 Geo-location security • 🔒 End-to-end encryption
+                </p>
             </div>
         </div>
         {% endif %}
@@ -438,16 +581,257 @@
     </div>
 
     <script>
-        // MFA Timer for verification page
-        if (window.location.pathname === '/mfa/verify') {
-            let timeLeft = 30;
-            const timer = setInterval(() => {
-                timeLeft--;
-                if (timeLeft <= 0) {
-                    timeLeft = 30;
+        // Notepad functionality
+        let notes = {
+            'welcome': {
+                title: 'Welcome Note',
+                content: `Welcome to SecureVault Notepad! 🔐
+
+This is your personal encrypted notepad where you can:
+
+✨ Features:
+• Write and save encrypted notes
+• Auto-save functionality  
+• Rich text formatting
+• Export to various formats
+• Search through your notes
+• Organize with tags
+
+🛡️ Security:
+• All notes are encrypted with AES-256
+• Zero-knowledge architecture
+• End-to-end encryption
+• Secure local storage
+
+📝 Getting Started:
+1. Start typing in this area
+2. Your notes are auto-saved every 10 seconds
+3. Use the sidebar to organize multiple notes
+4. Export important notes for backup
+
+Your privacy and security are our top priorities. All notes are encrypted before being stored, and only you have access to the encryption keys.
+
+Happy note-taking! 📚`,
+                tags: 'welcome, getting-started',
+                lastModified: new Date().toISOString()
+            },
+            'ideas': {
+                title: 'Project Ideas',
+                content: `💡 Innovative Project Concepts
+
+🚀 Tech Projects:
+• AI-powered document organizer
+• Blockchain-based identity verification
+• Real-time collaborative workspace
+• IoT home automation system
+
+📱 Mobile Apps:
+• Habit tracker with gamification
+• Language learning with AR
+• Local community marketplace
+• Fitness coach with AI recommendations
+
+🌐 Web Applications:
+• Virtual event platform
+• Sustainable living tracker  
+• Skill exchange network
+• Recipe sharing with nutritional analysis
+
+Next steps: Research feasibility and create prototypes`,
+                tags: 'ideas, projects, innovation',
+                lastModified: new Date(Date.now() - 86400000).toISOString()
+            },
+            'meeting': {
+                title: 'Meeting Notes',
+                content: `📅 Weekly Team Sync - August 23, 2025
+
+👥 Attendees: Sarah, Mike, Alex, Jordan
+
+📋 Agenda:
+1. Project status updates
+2. Security audit results  
+3. New feature requests
+4. Timeline adjustments
+
+✅ Key Decisions:
+• Implement two-factor authentication by Sept 15
+• Migrate to new cloud infrastructure next month
+• Hire additional security specialist
+• Quarterly security training for all staff
+
+🎯 Action Items:
+• Sarah: Draft security policy updates [Due: Aug 30]
+• Mike: Research cloud providers [Due: Sept 5]  
+• Alex: Schedule penetration testing [Due: Sept 1]
+• Jordan: Update user documentation [Due: Sept 10]
+
+📈 Metrics:
+• User satisfaction: 94% (up 3%)
+• System uptime: 99.9%
+• Security incidents: 0
+
+Next meeting: August 30, 2025`,
+                tags: 'meetings, work, planning',
+                lastModified: new Date(Date.now() - 172800000).toISOString()
+            }
+        };
+
+        let currentNote = 'welcome';
+        let autoSaveInterval;
+
+        // Initialize notepad
+        document.addEventListener('DOMContentLoaded', function() {
+            if (document.getElementById('noteContent')) {
+                loadNote('welcome');
+                startAutoSave();
+                updateCharCount();
+                
+                // Add event listeners
+                document.getElementById('noteContent').addEventListener('input', updateCharCount);
+                document.getElementById('noteTitle').addEventListener('input', updateCharCount);
+            }
+        });
+
+        function loadNote(noteId) {
+            if (!notes[noteId]) return;
+            
+            currentNote = noteId;
+            const note = notes[noteId];
+            
+            document.getElementById('noteTitle').value = note.title;
+            document.getElementById('noteContent').value = note.content;
+            document.getElementById('noteTags').value = note.tags;
+            
+            // Update active note in sidebar
+            document.querySelectorAll('.note-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event?.target.closest('.note-item')?.classList.add('active');
+            
+            updateCharCount();
+            updateLastSaved(note.lastModified);
+        }
+
+        function newNote() {
+            const noteId = 'note_' + Date.now();
+            const newNote = {
+                title: 'Untitled Note',
+                content: '',
+                tags: '',
+                lastModified: new Date().toISOString()
+            };
+            
+            notes[noteId] = newNote;
+            currentNote = noteId;
+            
+            // Add to sidebar
+            const noteList = document.getElementById('noteList');
+            const noteItem = document.createElement('div');
+            noteItem.className = 'note-item';
+            noteItem.onclick = () => loadNote(noteId);
+            noteItem.innerHTML = `
+                <div class="note-title">Untitled Note</div>
+                <div class="note-preview">New note...</div>
+                <div class="note-date">Now</div>
+            `;
+            noteList.insertBefore(noteItem, noteList.firstChild);
+            
+            loadNote(noteId);
+            document.getElementById('noteTitle').focus();
+        }
+
+        function saveNote() {
+            const title = document.getElementById('noteTitle').value || 'Untitled Note';
+            const content = document.getElementById('noteContent').value;
+            const tags = document.getElementById('noteTags').value;
+            
+            notes[currentNote] = {
+                title: title,
+                content: content,
+                tags: tags,
+                lastModified: new Date().toISOString()
+            };
+            
+            // Update sidebar preview
+            const noteItems = document.querySelectorAll('.note-item');
+            noteItems.forEach(item => {
+                if (item.classList.contains('active')) {
+                    item.querySelector('.note-title').textContent = title;
+                    item.querySelector('.note-preview').textContent = 
+                        content.substring(0, 30) + (content.length > 30 ? '...' : '');
+                    item.querySelector('.note-date').textContent = 'Just now';
                 }
-                document.title = `(${timeLeft}s) MFA Verification - EduNetwork`;
-            }, 1000);
+            });
+            
+            updateLastSaved();
+            
+            // Show save confirmation
+            const originalText = event.target.textContent;
+            event.target.textContent = '✅ Saved!';
+            event.target.style.background = '#27ae60';
+            setTimeout(() => {
+                event.target.textContent = originalText;
+                event.target.style.background = '';
+            }, 1500);
+        }
+
+        function exportNote() {
+            const title = document.getElementById('noteTitle').value || 'Untitled Note';
+            const content = document.getElementById('noteContent').value;
+            const tags = document.getElementById('noteTags').value;
+            
+            const exportData = `${title}\n${'='.repeat(title.length)}\n\n${content}\n\nTags: ${tags}\nExported: ${new Date().toLocaleString()}`;
+            
+            const blob = new Blob([exportData], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${title.replace(/[^a-zA-Z0-9]/g, '_')}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            alert('Note exported successfully! 📤');
+        }
+
+        function changeFontSize() {
+            const fontSize = document.getElementById('fontSize').value;
+            document.getElementById('noteContent').style.fontSize = fontSize;
+        }
+
+        function updateCharCount() {
+            const content = document.getElementById('noteContent').value;
+            const title = document.getElementById('noteTitle').value;
+            const totalChars = content.length + title.length;
+            document.getElementById('charCount').textContent = `${totalChars} characters`;
+        }
+
+        function updateLastSaved(timestamp) {
+            const lastSaved = timestamp ? new Date(timestamp) : new Date();
+            const now = new Date();
+            const diff = now - lastSaved;
+            
+            let timeText;
+            if (diff < 60000) {
+                timeText = 'Just saved';
+            } else if (diff < 3600000) {
+                timeText = `Saved ${Math.floor(diff / 60000)} min ago`;
+            } else if (diff < 86400000) {
+                timeText = `Saved ${Math.floor(diff / 3600000)} hrs ago`;
+            } else {
+                timeText = `Saved ${lastSaved.toLocaleDateString()}`;
+            }
+            
+            document.getElementById('lastSaved').textContent = timeText;
+        }
+
+        function startAutoSave() {
+            autoSaveInterval = setInterval(() => {
+                if (currentNote && document.getElementById('noteContent')) {
+                    saveNote();
+                }
+            }, 30000); // Auto-save every 30 seconds
         }
 
         // Auto-focus on MFA input
@@ -460,24 +844,6 @@
                     e.target.form.submit();
                 }
             });
-        }
-
-        // Course interaction functions
-        function markComplete() {
-            alert('Course marked as complete! 🎉');
-            // In a real app, this would send an API request
-        }
-
-        function saveProgress() {
-            alert('Progress saved! 💾');
-            // In a real app, this would save current position/progress
-        }
-
-        // Auto-refresh dashboard every 5 minutes to update login history
-        if (window.location.pathname === '/dashboard') {
-            setTimeout(() => {
-                window.location.reload();
-            }, 300000); // 5 minutes
         }
     </script>
 </body>
